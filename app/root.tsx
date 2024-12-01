@@ -5,10 +5,20 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
+import { RootProvider } from "./provider/RootProvider";
+
+export async function Loader() {
+  const CONVEX_URL = import.meta.env.VITE_CONVEX_URL;
+  return {
+    CONVEX_URL,
+  };
+}
+
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -25,6 +35,9 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { CONVEX_URL } = useLoaderData<typeof Loader>();
+
+
   return (
     <html lang="en">
       <head>
@@ -34,9 +47,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+        <RootProvider CONVEX_URL={CONVEX_URL}>
+          {children}
+          <ScrollRestoration />
+          <Scripts />
+        </RootProvider>
       </body>
     </html>
   );

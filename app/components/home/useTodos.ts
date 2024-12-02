@@ -1,30 +1,35 @@
 import { useState } from "react"
-import { Todo, TodoOperations } from "./types"
+import { useMutation, useQuery } from "convex/react"
+import { api } from "convex/_generated/api"
 
-export function useTodos(): [Todo[], TodoOperations, string, (value: string) => void] {
-  const [todos, setTodos] = useState<Todo[]>([
-    { id: 1, text: "Learn React", completed: false },
-    { id: 2, text: "Build a Todo App", completed: true },
-    { id: 3, text: "Deploy to production", completed: false },
-  ])
+export function useTodos() {
   const [newTodo, setNewTodo] = useState("")
 
-  const addTodo = () => {
+  const addTaskMutation = useMutation(api.tasks.addTask)
+
+
+  const addTodo = async () => {
     if (newTodo.trim() !== "") {
-      setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }])
-      setNewTodo("")
+      await addTaskMutation({ title: newTodo.trim() })
     }
   }
 
-  const toggleTodo = (id: number) => {
-    setTodos(todos.map(todo =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    ))
+  const listTasksQuery = useQuery(api.tasks.listTasksQuery)
+  console.log(listTasksQuery)
+
+  /*  const toggleTodo = (id: number) => {
+     setTodos(todos.map(todo =>
+       todo.id === id ? { ...todo, completed: !todo.completed } : todo
+     ))
+   }
+ 
+   const deleteTodo = (id: number) => {
+     setTodos(todos.filter(todo => todo.id !== id))
+   }
+  */
+  const operations = {
+    addTodo,
   }
 
-  const deleteTodo = (id: number) => {
-    setTodos(todos.filter(todo => todo.id !== id))
-  }
-
-  return [todos, { addTodo, toggleTodo, deleteTodo }, newTodo, setNewTodo]
+  return { todos: listTasksQuery, operations, newTodo, setNewTodo }
 }

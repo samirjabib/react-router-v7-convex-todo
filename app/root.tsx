@@ -10,9 +10,9 @@ import {
 
 import type { Route } from "./+types/root";
 import stylesheet from "./app.css?url";
-import { RootProvider } from "./provider/RootProvider";
+import { RootProvider } from "./provider/root-provider";
 
-export async function Loader() {
+export async function loader(params: Route.LoaderArgs) {
   const CONVEX_URL = import.meta.env.VITE_CONVEX_URL;
   return {
     CONVEX_URL,
@@ -35,8 +35,7 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { CONVEX_URL } = useLoaderData<typeof Loader>();
-
+  const data = useLoaderData<typeof loader>();
 
   return (
     <html lang="en">
@@ -47,11 +46,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <RootProvider CONVEX_URL={CONVEX_URL}>
+        <RootProvider CONVEX_URL={data.CONVEX_URL}>
           {children}
-          <ScrollRestoration />
-          <Scripts />
         </RootProvider>
+        <ScrollRestoration />
+        <Scripts />
       </body>
     </html>
   );

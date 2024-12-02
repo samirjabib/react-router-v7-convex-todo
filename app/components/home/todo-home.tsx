@@ -2,12 +2,11 @@ import { Plus } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
 import { Button } from "~/components/ui/button"
-import { TodoItem } from './components/todo-item'
-import { useTodos } from './useTodos'
-
+import { TodoItem } from "./components/todo-item"
+import { useTodos } from "./useTodos"
 
 export default function TodoHome() {
-  const [todos, operations, newTodo, setNewTodo] = useTodos()
+  const { todos, operations, newTodo, setNewTodo } = useTodos()
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
@@ -22,19 +21,19 @@ export default function TodoHome() {
               placeholder="Add a new todo"
               value={newTodo}
               onChange={(e) => setNewTodo(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && operations.addTodo()}
               className="flex-grow"
             />
-            <Button onClick={() => operations.addTodo(newTodo)}>
+            <Button onClick={() => operations.addTodo()}>
               <Plus className="h-4 w-4 mr-2" />
               Add
             </Button>
           </div>
           <ul className="space-y-2">
-            {todos.map((todo) => (
+            {todos?.map((todo) => (
               <TodoItem
-                key={todo.id}
+                key={todo._id}
                 todo={todo}
-                operations={operations}
               />
             ))}
           </ul>

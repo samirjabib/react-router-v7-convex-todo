@@ -2,12 +2,15 @@ import { Check, Trash2 } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
 import { Doc } from "convex/_generated/dataModel"
+import { useTodos } from "../useTodos"
 
 interface TodoItemProps {
   todo: Doc<"tasks">
 }
 
 export function TodoItem({ todo }: TodoItemProps) {
+  const { operations } = useTodos()
+  console.log(todo)
   return (
     <li className="flex items-center space-x-2">
       <Button
@@ -17,8 +20,8 @@ export function TodoItem({ todo }: TodoItemProps) {
           "flex-shrink-0",
           todo.completed && "bg-green-100 text-green-600"
         )}
-/*         onClick={() => operations.toggleTodo(todo._id)}
- */      >
+        onClick={() => operations.updateTodo(todo._id, !todo.completed)}
+      >
         <Check className={cn("h-4 w-4", !todo.completed && "opacity-0")} />
       </Button>
       <span className={cn(
@@ -30,8 +33,8 @@ export function TodoItem({ todo }: TodoItemProps) {
       <Button
         variant="ghost"
         size="icon"
-/*         onClick={() => operations.deleteTodo(todo._id)}
- */        className="flex-shrink-0 text-red-500 hover:text-red-700"
+        onClick={() => operations.deleteTodo(todo._id)}
+        className="flex-shrink-0 text-red-500 hover:text-red-700"
       >
         <Trash2 className="h-4 w-4" />
       </Button>

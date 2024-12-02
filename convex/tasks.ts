@@ -20,3 +20,25 @@ export const addTask = mutation({
         });
     }
 })
+
+
+export const updateTask = mutation({
+    args: {
+        id: v.id("tasks"),
+        completed: v.boolean(),
+    },
+    handler: async (ctx, args) => {
+        return ctx.db.patch(args.id, {
+            completed: args.completed,
+        });
+    }
+})
+
+export const deleteTask = mutation({
+    args: {
+        id: v.id("tasks"),
+    },
+    handler: async (ctx, args) => {
+        return ctx.db.delete(args.id);
+    }
+})
